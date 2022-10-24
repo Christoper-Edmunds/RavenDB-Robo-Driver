@@ -26,7 +26,6 @@ Initial Attempt: Changing an email automatically
 #depreciated or non-functioning methods 
 ######################################    
 #EditJSONUsingJscriptInjection(driver) #depreciated cus not as good as the chosen method, but might be useful for fringe issues + other functionality like batch edits
-#GetPlacementCode(driver) #non-functioning as of yet
 #test_eight_components() #exists purely to test that the library is functioning properly, will be removed later in development
 #NavigateToRavenDBPlacement(driver) #Origional proof of concept, now being broken up into modules for dynamic behaviour 
 
@@ -56,12 +55,12 @@ import pyperclip
 
 
 #String for chrome profile data, should be changed for new users
-# C:\Users\ChrisEdmunds\AppData\Local\Google\Chrome\User Data\Default
+# C:\Users\*****YourNameHere*****\AppData\Local\Google\Chrome\User Data\Default
 #unique path can be found by entering chrome://version/ into your browser, it will be displayed under "profile path:"
 
 #Sets up the Robo-driver with the correct cookies and capabilities. 
 options = webdriver.ChromeOptions() 
-options.add_argument(r"user-data-dir=C:\Users\ChrisEdmunds\AppData\Local\Google\Chrome\User Data") #Path to your chrome profile
+options.add_argument(r"user-data-dir=C:\Users\*****YourNameHere*****\AppData\Local\Google\Chrome\User Data") #Path to your chrome profile
 driver = webdriver.Chrome(service=ChromeService(executable_path=ChromeDriverManager().install()), chrome_options=options)
 
 
@@ -93,7 +92,7 @@ def test_eight_components():
 #OG proof of concept, currently depreciated    
 def NavigateToRavenDBPlacement(driver):
     #loads the ravenDB website
-    driver.get("https://sonovate3-ygod.ravenhq.com/studio/index.html#databases/query/index/AdjustedTransactionIndex?&database=Invoicing-Production")
+    driver.get("****YOUR DATABASE PAGE LINK*****")
     
 
     #checks that the html title is correct for the loading screen for ravendb
@@ -193,9 +192,10 @@ def NavigateToRavenDBPlacement(driver):
         ActionChains(driver).key_down(Keys.LEFT_CONTROL).perform()
         ActionChains(driver).send_keys("v").perform()
         ActionChains(driver).key_up(Keys.LEFT_CONTROL).perform()
+        
 #Origional method, a better method was devised so this is no longer used        
 def EditJSONUsingJscriptInjection(driver):
-            #Creates a tuple containing every ace line as a seperate list object
+        #Creates a tuple containing every ace line as a seperate list object
         div_contents = driver.find_elements(By.CLASS_NAME, value="ace_line")
 
 
@@ -230,29 +230,6 @@ def EditJSONUsingJscriptInjection(driver):
         #driver.execute_script('document.body.innerHTML = document.body.innerHTML.replaceAll("Line1", "Testing?")')
         driver.execute_script(JS_String_Builder)
 
-
-#Gets the placement URL from the placement dashboard, using the placement number from the ticket - nonfunctioning
-def GetPlacementCode(driver):
-    #Im struggling to get this to work, for some reason the buttons aren't registering clicks. Not sure why. 
-    driver.get("https://members.sonovate.com/") 
-    time.sleep(2)
-    
-    initialTitle = driver.title 
-    if "Sign In" in initialTitle:
-        Login_Button = driver.find_element(By.ID, value="login")
-        Login_Button.click
-    else:
-        pageURl = driver.current_url
-        assert pageURl == "https://members.sonovate.com/"
-        
-    pageURl = driver.current_url
-    assert pageURl == "https://members.sonovate.com/"
-    
-    time.sleep(1)
-    Placements_Button = driver.find_element(By.XPATH, "//*[@data-testid='Placements']")
-    WebDriverWait(driver, timeout=20).until(EC.element_to_be_clickable((By.XPATH, "//*[@data-testid='Placements']")))
-    time.sleep(1)
-    Placements_Button.click
 #Opens and preps a candidate file using a candidate file URL provided by the user
 def NavigateToRavenDBCandidate(driver):
     
@@ -426,7 +403,7 @@ def SaveButton(driver):
     ActionChains(driver).key_up(Keys.LEFT_ALT).perform()
 
 
-#example of replacing invoice candidate https://invoicing-staging.sonovate.com:13518/studio/index.html#databases/edit?&id=candidates%2F999001153&database=billing&list=Candidates&item=0
+#example of replacing invoice candidate
 NavigateToRavenDBCandidate(driver)
 json_as_dict = ExtractAceContents(driver)
 json_as_formatted_string = ReplaceContractEmailCandidate(driver, json_as_dict)
